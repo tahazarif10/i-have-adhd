@@ -1,0 +1,21 @@
+name: verify PR 185
+
+on:
+  push:
+    branches:
+      - ci/pr185-verify
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - name: Run full unit suite
+        run: python3 -m unittest discover -s tests -v
+      - name: Validate eval cases
+        run: python3 scripts/run_evals.py validate
+      - name: Check PR diff whitespace
+        run: git diff --check f4da56f178bc43e5c51f4263762e80711ffd616d^..f4da56f178bc43e5c51f4263762e80711ffd616d
